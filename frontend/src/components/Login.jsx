@@ -1,0 +1,222 @@
+import React, { useEffect, useState } from "react";
+import { Eye, EyeOff, LogIn } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+import { InputWrapper, FIELDS, BUTTONCLASSES } from "../assets/dummy";
+
+const INITIAL_FORM = { email: "", password: "" };
+const API_URL = "http://localhost:4000";
+
+const Login = ({ onSubmit, onSwitchMode }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState(INITIAL_FORM);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  const navigate = useNavigate();
+
+  // 🔁 Restore session
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    if (token) {
+      (async () => {
+        try {
+          const { data } = await axios.get(
+            `${API_URL}/api/user/me`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          if (data.success) {
+            onSubmit?.({ token, userId, ...data.user });
+            toast.success("Session restored. Redirecting...");
+            navigate("/");
+          } else {
+            localStorage.clear();
+          }
+        } catch {
+          localStorage.clear();
+        }
+      })(); // ✅ important
+    }
+  }, [navigate, onSubmit]);
+
+  // 🚀 Login submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!rememberMe) {
+      toast.error('You must enable "Remember Me" to login');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data } = await axios.post(
+        `${API_URL}/api/user/login`,
+        formData
+      );
+
+      if (!data.token)
+        throw new Error(data.message || "Login failed");
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userId", data.user.id);
+
+      setFormData(INITIAL_FORM);
+
+      onSubmit?.({
+        token: data.token,
+        userId: data.user.id,
+        ...data.user,
+      });
+
+      toast.success("Login successful!");
+      setTimeout(() => navigate("/"), 1000);
+    } catch (err) {
+      const msg =
+        err.response?.data?.message || err.message;
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSwitchMode = () => {
+    toast.dismiss();
+    onSwitchMode?.();
+  };
+
+  // 🔒 Remove name field for login
+  const LOGIN_FIELDS = FIELDS.filter(
+    (f) => f.name !== "name"
+  );
+
+  return (
+    <div className="max-w-md bg-white w-full shadow-lg border border-purple-100 rounded-xl p-8">
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar
+      />
+
+      <div className="mb-6 text-center">
+        <div className="w-16 h-16 bg-gradient-to-br from-fuchsia-500 to-purple-600 rounded-full mx-auto flex items-center justify-center mb-4">
+          <LogIn className="w-8 h-8 text-white" />
+        </div>
+
+        <h2 className="text-2xl font-bold text-gray-800">
+          Welcome Back
+        </h2>
+
+        <p className="text-gray-500 text-sm mt-1">
+          Sign in to continue
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {LOGIN_FIELDS.map(
+          ({ name, type, placeholder, icon: Icon }) => {
+            const isPassword = name === "password";
+
+            return (
+              <div key={name} className={InputWrapper}>
+                <Icon className="text-purple-500 w-5 h-5 mr-2" />
+
+                <input
+                  type={
+                    isPassword
+                      ? showPassword
+                        ? "text"
+                        : "password"
+                      : type
+                  }
+                  placeholder={placeholder}
+                  value={formData[name]}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      [name]: e.target.value,
+                    })
+                  }
+                  className="w-full focus:outline-none text-sm text-gray-700"
+                  required
+                />
+
+                {isPassword && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setShowPassword((prev) => !prev)
+                    }
+                    className="ml-2 hover:text-purple-500"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
+                )}
+              </div>
+            );
+          }
+        )}
+
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            id="rememberMe"
+            checked={rememberMe}
+            onChange={() =>
+              setRememberMe(!rememberMe)
+            }
+            className="h-4 w-4 text-purple-500 border-gray-300 rounded"
+          />
+          <label
+            htmlFor="rememberMe"
+            className="ml-2 text-sm text-gray-700"
+          >
+            Remember Me
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className={BUTTONCLASSES}
+        >
+          {loading ? (
+            "Logging in..."
+          ) : (
+            <>
+              <LogIn className="w-4 h-4 inline mr-1" />
+              Login
+            </>
+          )}
+        </button>
+      </form>
+
+      <p className="text-center text-sm text-gray-600 mt-6">
+        Don’t have an account?{" "}
+        <button
+          type="button"
+          onClick={handleSwitchMode}
+          className="text-purple-600 hover:underline"
+        >
+          Sign Up
+        </button>
+      </p>
+    </div>
+  );
+};
+
+export default Login;
+
+
