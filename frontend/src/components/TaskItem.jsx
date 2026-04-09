@@ -55,7 +55,7 @@ const TaskItem = ({
       setIsCompleted((prev) => !prev);
 
       await axios.put(
-        `${API_BASE}/${task._id}/gp`,
+        `${API_BASE}/${task._id}`,
         { completed: newStatus },
         { headers: getAuthHeaders() }
       );
@@ -86,7 +86,7 @@ const TaskItem = ({
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `${API_BASE}/${task._id}/gp`,
+        `${API_BASE}/${task._id}`,
         { headers: getAuthHeaders() }
       );
 
@@ -100,25 +100,31 @@ const TaskItem = ({
     }
   };
 
-  const handleSave = async (updatedTask) => {
-    try {
-      const payload = (({ title, description, priority, dueDate, completed }) =>
-        ({ title, description, priority, dueDate, completed })
-      )(updatedTask);
+  // const handleSave = async (updatedTask) => {
+  //   try {
+  //     const payload = (({ title, description, priority, dueDate, completed }) =>
+  //       ({ title, description, priority, dueDate, completed })
+  //     )(updatedTask);
 
-      await axios.put(`${API_BASE}/${updatedTask._id}/gp`, payload, {
-        headers: getAuthHeaders(),
-      });
+  //     await axios.put(`${API_BASE}/${updatedTask._id}/gp`, payload, {
+  //       headers: getAuthHeaders(),
+  //     });
 
-      setShowEditModal(false);
-      onRefresh?.();
-    } catch (err) {
-      if (err.response?.status === 401) {
-        onLogout?.();
-      } else {
-        console.error("Failed to update task:", err.response?.data?.message || err.message);
-      }
-    }
+  //     setShowEditModal(false);
+  //     onRefresh?.();
+  //   } catch (err) {
+  //     if (err.response?.status === 401) {
+  //       onLogout?.();
+  //     } else {
+  //       console.error("Failed to update task:", err.response?.data?.message || err.message);
+  //     }
+  //   }
+  // };
+
+
+  const handleSave = (updatedTask) => {
+    setShowEditModal(false);
+    onRefresh?.();
   };
 
   const borderColor = isCompleted
@@ -193,8 +199,8 @@ const TaskItem = ({
             <div className="mt-2 space-y-1">
               <div
                 className={`${TI_CLASSES.dateRow} ${task.dueDate && isToday(new Date(task.dueDate))
-                    ? "text-fuchsia-600"
-                    : "text-gray-500"
+                  ? "text-fuchsia-600"
+                  : "text-gray-500"
                   }`}
               >
                 <Calendar className="w-3.5 h-3.5" />

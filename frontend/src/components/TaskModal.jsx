@@ -46,19 +46,19 @@ const TaskModal = ({ isOpen, onClose, taskToEdit, onSave, onLogout }) => {
     setError(null);
   }, [isOpen, taskToEdit, today]);
 
-const handleChange = useCallback((e) => {
-  const { name, value, type, checked } = e.target;
+  const handleChange = useCallback((e) => {
+    const { name, value, type, checked } = e.target;
 
-  setTaskData((prev) => {
-    if (type === "radio") {
-      return { ...prev, [name]: value }; 
-    }
-    if (type === "checkbox") {
-      return { ...prev, [name]: checked };
-    }
-    return { ...prev, [name]: value };
-  });
-}, []);
+    setTaskData((prev) => {
+      if (type === "radio") {
+        return { ...prev, [name]: value };
+      }
+      if (type === "checkbox") {
+        return { ...prev, [name]: checked };
+      }
+      return { ...prev, [name]: value };
+    });
+  }, []);
 
   const getHeaders = useCallback(() => {
     const token = localStorage.getItem("token");
@@ -66,50 +66,52 @@ const handleChange = useCallback((e) => {
     return { Authorization: `Bearer ${token}` };
   }, []);
 
- const handleSubmit = useCallback(
-  async (e) => {
-    e.preventDefault();
-    if (loading) return;
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (loading) return;
 
-    if (taskData.dueDate < today) {
-      setError("Due date cannot be in the past");
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const isEdit = Boolean(taskData.id);
-      const url = isEdit ? `${API_BASE}/${taskData.id}` : `${API_BASE}`;
-      const method = isEdit ? "put" : "post";
-
-      const payload = {
-        ...taskData,
-        completed: taskData.completed === "yes" ? true : false,
-      };
-
-      const resp = await axios({
-        method,
-        url,
-        headers: getHeaders(),
-        data: payload,
-      });
-
-      onSave?.(resp.data.task);
-      onClose();
-    } catch (err) {
-      if (err.response?.status === 401) {
-        onLogout?.();
+      if (taskData.dueDate < today) {
+        setError("Due date cannot be in the past");
         return;
       }
-      setError(err.response?.data?.message || err.message || "Failed to save task");
-    } finally {
-      setLoading(false);
-    }
-  },
-  [taskData, today, getHeaders, onLogout, onSave, onClose, loading]
-);
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const isEdit = Boolean(taskData.id);
+        const url = isEdit ? `${API_BASE}/${taskData.id}` : `${API_BASE}`;
+        const method = isEdit ? "put" : "post";
+
+        const { id, ...rest } = taskData;
+
+        const payload = {
+          ...rest,
+          completed: taskData.completed === "yes",
+        };
+
+        const resp = await axios({
+          method,
+          url,
+          headers: getHeaders(),
+          data: payload,
+        });
+
+        onSave?.(resp.data.task);
+        onClose();
+      } catch (err) {
+        if (err.response?.status === 401) {
+          onLogout?.();
+          return;
+        }
+        setError(err.response?.data?.message || err.message || "Failed to save task");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [taskData, today, getHeaders, onLogout, onSave, onClose, loading]
+  );
 
   if (!isOpen) return null;
 
