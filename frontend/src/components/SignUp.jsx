@@ -10,7 +10,7 @@ import {
     MESSAGE_ERROR
 } from "../assets/dummy";
 
-const API_URL = "http://localhost:4000";
+const API_URL = "https://agiledesk.onrender.com";
 const INITIAL_FORM = { name: "", email: "", password: "" };
 
 const SignUp = ({ onSwitchMode }) => {

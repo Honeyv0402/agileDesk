@@ -10,7 +10,7 @@ import {
 import { format, isToday } from "date-fns";
 import TaskModal from './TaskModal';
 
-const API_BASE = "http://localhost:4000/api/tasks";
+const API_BASE = "https://agiledesk.onrender.com/api/tasks";
 
 const TaskItem = ({
   task,

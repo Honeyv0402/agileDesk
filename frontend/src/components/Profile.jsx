@@ -19,7 +19,7 @@ import {
   LogOut,
 } from "lucide-react";
 
-const API_URL = "http://localhost:4000";
+const API_URL = "https://agiledesk.onrender.com";
 
 const securityFields = [
   { name: "currentPassword", placeholder: "Current Password" },

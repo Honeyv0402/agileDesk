@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 
-const API_BASE = "http://localhost:4000/api/tasks";
+const API_BASE = "https://agiledesk.onrender.com/api/tasks";
 
 const TaskModal = ({ isOpen, onClose, taskToEdit, onSave, onLogout }) => {
   const [taskData, setTaskData] = useState(DEFAULT_TASK);

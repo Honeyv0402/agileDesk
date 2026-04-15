@@ -27,7 +27,7 @@ import TaskModal from "../components/TaskModal";
 import axios from "axios";
 
 
-const API_BASE = 'http://localhost:4000/api/tasks';
+const API_BASE = 'https://agiledesk.onrender.com/api/tasks';
 
 const Dashboard = () => {
   const { tasks = [], refreshTasks } = useOutletContext();
