@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Task from "../models/taskModel.js";
+import { generateTaskFromText } from "../services/aiService.js";
 
 
 // create task
@@ -216,6 +217,56 @@ export const deleteTaskById = async (req, res) => {
         res.status(500).json({
             success: false,
             message: err.message
+        });
+    }
+};
+
+// generate task by AI
+export const generateTaskAI = async (req, res) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            });
+        }
+
+        const { text } = req.body;
+
+        if (!text) {
+            return res.status(400).json({
+                success: false,
+                message: "Text input is required"
+            });
+        }
+
+        if (!process.env.GROQ_API_KEY) {
+            return res.status(500).json({
+                success: false,
+                message: "GROQ_API_KEY missing in .env"
+            });
+        }
+
+        const aiTask = await generateTaskFromText(text);
+
+        if (!aiTask) {
+            return res.status(400).json({
+                success: false,
+                message: "AI failed to generate task"
+            });
+        }
+
+        return res.json({
+            success: true,
+            task: aiTask
+        });
+
+    } catch (err) {
+        console.log("AI ERROR:", err.response?.data || err.message);
+
+        return res.status(500).json({
+            success: false,
+            message: err.response?.data || err.message
         });
     }
 };
