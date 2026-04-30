@@ -7,7 +7,8 @@ import axios from "axios";
 import { InputWrapper, FIELDS, BUTTONCLASSES } from "../assets/dummy";
 
 const INITIAL_FORM = { email: "", password: "" };
-const API_URL = "https://agiledesk.onrender.com";
+// const API_URL = "https://agiledesk.onrender.com";
+const API_URL = "http://localhost:4000";
 
 const Login = ({ onSubmit, onSwitchMode }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,7 +18,6 @@ const Login = ({ onSubmit, onSwitchMode }) => {
 
   const navigate = useNavigate();
 
-  // 🔁 Restore session
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
@@ -42,11 +42,10 @@ const Login = ({ onSubmit, onSwitchMode }) => {
         } catch {
           localStorage.clear();
         }
-      })(); // ✅ important
+      })();
     }
   }, [navigate, onSubmit]);
 
-  // 🚀 Login submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -93,126 +92,128 @@ const Login = ({ onSubmit, onSwitchMode }) => {
     onSwitchMode?.();
   };
 
-  // 🔒 Remove name field for login
   const LOGIN_FIELDS = FIELDS.filter(
     (f) => f.name !== "name"
   );
 
   return (
-    <div className="max-w-md bg-white w-full shadow-lg border border-purple-100 rounded-xl p-8">
+    <div className="min-h-screen w-full flex items-center justify-center bg-linear-to-br from-purple-100 via-white to-fuchsia-100 px-4">
       <ToastContainer
         position="top-center"
         autoClose={3000}
         hideProgressBar
       />
 
-      <div className="mb-6 text-center">
-        <div className="w-16 h-16 bg-gradient-to-br from-fuchsia-500 to-purple-600 rounded-full mx-auto flex items-center justify-center mb-4">
-          <LogIn className="w-8 h-8 text-white" />
+      <div className=" max-w-md w-full bg-white/80 backdrop-blur-md shadow-xl shadow-purple-200/40 border border-purple-100 
+      rounded-2xl p-8 transition-all duration-300 hover:shadow-2xl">
+        <div className="mb-6 text-center">
+          <div className="w-16 h-16 bg-linear-to-br from-fuchsia-500 to-purple-600 rounded-full mx-auto flex items-center justify-center mb-4
+          shadow-lg shadow-purple-300/40">
+            <LogIn className="w-8 h-8 text-white" />
+          </div>
+
+          <h2 className="text-2xl font-bold text-gray-800">
+            Welcome Back
+          </h2>
+
+          <p className="text-gray-500 text-sm mt-1">
+            Sign in to continue
+          </p>
         </div>
 
-        <h2 className="text-2xl font-bold text-gray-800">
-          Welcome Back
-        </h2>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {LOGIN_FIELDS.map(
+            ({ name, type, placeholder, icon: Icon }) => {
+              const isPassword = name === "password";
 
-        <p className="text-gray-500 text-sm mt-1">
-          Sign in to continue
+              return (
+                <div key={name} className="flex items-center border border-purple-100 rounded-lg px-3 py-2.5
+                  bg-white/90 focus-within:ring-2 focus-within:ring-purple-500 transition-all duration-200">
+                  <Icon className="text-purple-500 w-5 h-5 mr-2" />
+
+                  <input
+                    type={
+                      isPassword
+                        ? showPassword
+                          ? "text"
+                          : "password"
+                        : type
+                    }
+                    placeholder={placeholder}
+                    value={formData[name]}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        [name]: e.target.value,
+                      })
+                    }
+                    className="w-full bg-transparent focus:outline-none text-sm text-gray-700"
+                    required
+                  />
+
+                  {isPassword && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowPassword((prev) => !prev)
+                      }
+                      className="ml-2 hover:text-purple-500 transition"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-5 h-5" />
+                      ) : (
+                        <Eye className="w-5 h-5" />
+                      )}
+                    </button>
+                  )}
+                </div>
+              );
+            }
+          )}
+
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="rememberMe"
+              checked={rememberMe}
+              onChange={() =>
+                setRememberMe(!rememberMe)
+              }
+              className="h-4 w-4 text-purple-500 border-gray-300 rounded"
+            />
+            <label
+              htmlFor="rememberMe"
+              className="ml-2 text-sm text-gray-700"
+            >
+              Remember Me
+            </label>
+          </div>
+
+          <button
+            type="submit" disabled={loading} className="w-full bg-linear-to-r from-fuchsia-500 to-purple-600  text-white text-sm font-semibold py-2.5 rounded-lg
+            shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
+            {loading ? (
+              "Logging in..."
+            ) : (
+              <>
+                <LogIn className="w-4 h-4 inline mr-1" />
+                Login
+              </>
+            )}
+          </button>
+        </form>
+
+        <p className="text-center text-sm text-gray-600 mt-6">
+          Don’t have an account?{" "}
+          <button
+            type="button"
+            onClick={handleSwitchMode}
+            className="text-purple-600 hover:underline font-medium"
+          >
+            Sign Up
+          </button>
         </p>
       </div>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {LOGIN_FIELDS.map(
-          ({ name, type, placeholder, icon: Icon }) => {
-            const isPassword = name === "password";
-
-            return (
-              <div key={name} className={InputWrapper}>
-                <Icon className="text-purple-500 w-5 h-5 mr-2" />
-
-                <input
-                  type={
-                    isPassword
-                      ? showPassword
-                        ? "text"
-                        : "password"
-                      : type
-                  }
-                  placeholder={placeholder}
-                  value={formData[name]}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      [name]: e.target.value,
-                    })
-                  }
-                  className="w-full focus:outline-none text-sm text-gray-700"
-                  required
-                />
-
-                {isPassword && (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setShowPassword((prev) => !prev)
-                    }
-                    className="ml-2 hover:text-purple-500"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
-                  </button>
-                )}
-              </div>
-            );
-          }
-        )}
-
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="rememberMe"
-            checked={rememberMe}
-            onChange={() =>
-              setRememberMe(!rememberMe)
-            }
-            className="h-4 w-4 text-purple-500 border-gray-300 rounded"
-          />
-          <label
-            htmlFor="rememberMe"
-            className="ml-2 text-sm text-gray-700"
-          >
-            Remember Me
-          </label>
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className={BUTTONCLASSES}
-        >
-          {loading ? (
-            "Logging in..."
-          ) : (
-            <>
-              <LogIn className="w-4 h-4 inline mr-1" />
-              Login
-            </>
-          )}
-        </button>
-      </form>
-
-      <p className="text-center text-sm text-gray-600 mt-6">
-        Don’t have an account?{" "}
-        <button
-          type="button"
-          onClick={handleSwitchMode}
-          className="text-purple-600 hover:underline"
-        >
-          Sign Up
-        </button>
-      </p>
     </div>
   );
 };

@@ -31,7 +31,7 @@ export const DEFAULT_TASK = {
 
 // LINK_CLASSES for Sidebar navigation
 export const LINK_CLASSES = {
-  base: "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-purple-100 hover:text-purple-700 transition-colors",
+  base: "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-purple-100/70 hover:text-purple-700 transition-all duration-200",
   active: "bg-purple-100 text-purple-700",
   inactive: "text-gray-600",
   icon: "w-5 h-5",
@@ -73,13 +73,13 @@ export const HEADER =
   "flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-6 gap-3";
 
 export const ADD_BUTTON =
-  "flex items-center gap-2 bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-300";
+  "flex items-center gap-2 bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white px-4 py-2 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 active:scale-[0.97]";
 
 export const STATS_GRID =
   "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-6";
 
 export const STAT_CARD =
-  "p-3 md:p-4 rounded-xl bg-white shadow-sm border border-purple-100 hover:shadow-md transition-all duration-300 min-w-0";
+  "p-3 md:p-4 rounded-xl bg-white/80 backdrop-blur-sm shadow-sm border border-purple-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 min-w-0";
 
 export const ICON_WRAPPER = "p-1.5 md:p-2 rounded-lg";
 
@@ -186,7 +186,7 @@ export const FILTER_LABELS = {
 // Empty state
 export const EMPTY_STATE = {
   wrapper:
-    "p-6 bg-white rounded-xl shadow-sm border border-purple-100 text-center flex flex-col items-center justify-center",
+  "p-6 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-purple-100 text-center flex flex-col items-center justify-center",
 
   iconWrapper:
     "w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4",
@@ -217,10 +217,10 @@ export const FIELDS = [
 ];
 
 export const InputWrapper =
-  "flex items-center border border-purple-100 rounded-lg px-3 py-2.5 focus-within:ring-2 focus-within:ring-purple-500";
+  "flex items-center border border-purple-100 rounded-xl px-3 py-3 bg-white/70 backdrop-blur-sm transition-all duration-200 focus-within:ring-2 focus-within:ring-purple-500 focus-within:shadow-md";
 
 export const BUTTONCLASSES =
-  "w-full bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white text-sm font-semibold py-2.5 rounded-lg hover:shadow-md";
+  "w-full bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white text-sm font-semibold py-2.5 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 active:scale-[0.98]";
 
 export const MESSAGE_SUCCESS =
   "bg-green-50 text-green-600 p-3 rounded-lg text-sm mb-4 border border-green-100";
@@ -283,7 +283,7 @@ export const getPriorityBadgeColor = (priority) => {
 
 export const TI_CLASSES = {
   wrapper:
-    "group p-4 sm:p-5 rounded-xl shadow-sm bg-white border border-gray-200 hover:shadow-md transition-all duration-300",
+  "group p-4 sm:p-5 rounded-xl shadow-sm bg-white/80 backdrop-blur-sm border border-purple-100 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300",
 
   leftContainer:
     "flex items-start gap-2 sm:gap-3 flex-1 min-w-0",

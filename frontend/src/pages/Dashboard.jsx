@@ -27,7 +27,8 @@ import TaskModal from "../components/TaskModal";
 import axios from "axios";
 
 
-const API_BASE = 'https://agiledesk.onrender.com/api/tasks';
+// const API_BASE = 'https://agiledesk.onrender.com/api/tasks';
+const API_BASE = 'http://localhost:4000/api/tasks';
 
 const Dashboard = () => {
   const { tasks = [], refreshTasks } = useOutletContext();
@@ -158,7 +159,7 @@ const handleTaskSave = useCallback(() => {
                   <p
                     className={`${VALUE_CLASS} ${
                       gradient
-                        ? "bg-gradient-to-r from-fuchsia-500 to-purple-600 bg-clip-text text-transparent"
+                        ? "bg-linear-to-r from-fuchsia-500 to-purple-600 bg-clip-text text-transparent"
                         : textColor || ""
                     }`}
                   >
@@ -257,7 +258,8 @@ const handleTaskSave = useCallback(() => {
             setSelectedTask(null);
             setShowModal(true);
           }}
-          className="hidden md:flex items-center justify-center p-4 border-2 border-dashed border-purple-200 rounded-xl hover:border-purple-400 bg-purple-50/50 cursor-pointer transition-colors"
+          className="hidden md:flex items-center justify-center p-4 border-2 border-dashed border-purple-200 rounded-xl hover:border-purple-400
+           bg-purple-50/50 cursor-pointer transition-colors"
         >
           <Plus className="w-5 h-5 text-purple-500 mr-2" />
           <span className="text-gray-600 font-medium">Add New Task</span>
