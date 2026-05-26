@@ -117,7 +117,7 @@ We are excited to have you onboard.
             <div style="text-align:center; margin:40px 0;">
 
                 <a
-                    href="https://agile-desk.vercel.app/"
+                    href="https://agile-desk.vercel.app/signup"
                     style="
                         background:#2563eb;
                         color:white;
