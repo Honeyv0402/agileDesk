@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { sendRegistrationEmail } from "../services/email.service.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRES = "24h";
@@ -14,25 +15,39 @@ const createToken = (userId) => {
 
 // register
 export async function registerUser(req, res) {
+
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
-        return res.status(400).json({ success: false, message: "all fields are required" });
+        return res.status(400).json({
+            success: false,
+            message: "all fields are required",
+        });
     }
 
     if (!validator.isEmail(email)) {
-        return res.status(400).json({ success: false, message: "invalid email" });
+        return res.status(400).json({
+            success: false,
+            message: "invalid email",
+        });
     }
 
     if (password.length < 8) {
-        return res.status(400).json({ success: false, message: "password must be atleast 8 characters" });
+        return res.status(400).json({
+            success: false,
+            message: "password must be atleast 8 characters",
+        });
     }
 
     try {
+
         const existingUser = await User.findOne({ email });
 
         if (existingUser) {
-            return res.status(409).json({ success: false, message: "user already exists" });
+            return res.status(409).json({
+                success: false,
+                message: "user already exists",
+            });
         }
 
         const hashed = await bcrypt.hash(password, 10);
@@ -43,6 +58,10 @@ export async function registerUser(req, res) {
             password: hashed,
         });
 
+        // SEND EMAIL
+        await sendRegistrationEmail(user.email, user.name);
+
+        // CREATE TOKEN
         const token = createToken(user._id);
 
         return res.status(201).json({
@@ -54,9 +73,15 @@ export async function registerUser(req, res) {
                 email: user.email,
             },
         });
+
     } catch (err) {
+
         console.log(err);
-        return res.status(500).json({ success: false, message: "server error" });
+
+        return res.status(500).json({
+            success: false,
+            message: "server error",
+        });
     }
 }
 
