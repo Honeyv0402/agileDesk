@@ -4,8 +4,8 @@ import { UserPlus } from "lucide-react";
 
 import { InputWrapper, FIELDS, BUTTONCLASSES, MESSAGE_SUCCESS, MESSAGE_ERROR } from "../assets/dummy";
 
-// const API_URL = "https://agiledesk.onrender.com";
-const API_URL = "http://localhost:4000";
+const API_URL = "https://agiledesk.onrender.com";
+// const API_URL = "http://localhost:4000";
 const INITIAL_FORM = { name: "", email: "", password: "" };
 
 const SignUp = ({ onSwitchMode }) => {
