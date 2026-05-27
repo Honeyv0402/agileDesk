@@ -58,9 +58,6 @@ export async function registerUser(req, res) {
             password: hashed,
         });
 
-        // SEND EMAIL
-        await sendRegistrationEmail(user.email, user.name);
-
         // CREATE TOKEN
         const token = createToken(user._id);
 
@@ -83,6 +80,9 @@ export async function registerUser(req, res) {
             message: "server error",
         });
     }
+
+    // SEND EMAIL
+    await sendRegistrationEmail(user.email, user.name);
 }
 
 // login
