@@ -2,7 +2,7 @@ import User from "../models/userModel.js";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { sendRegistrationEmail } from "../services/email.service.js";
+// import { sendRegistrationEmail } from "../services/email.service.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRES = "24h";
