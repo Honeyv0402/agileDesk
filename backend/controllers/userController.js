@@ -59,7 +59,7 @@ export async function registerUser(req, res) {
         });
 
         // SEND EMAIL
-        await sendRegistrationEmail(user.email, user.name);
+        // await sendRegistrationEmail(user.email, user.name);
 
         // CREATE TOKEN
         const token = createToken(user._id);
