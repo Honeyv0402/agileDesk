@@ -63,7 +63,7 @@ const TaskItem = ({
 
       onRefresh?.();
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       setIsCompleted((prev) => !prev);
 
       if (err.response?.status === 401) {
@@ -93,7 +93,7 @@ const TaskItem = ({
 
       onRefresh?.();
     } catch (err) {
-      console.error(err);
+      // console.error(err);
 
       if (err.response?.status === 401) {
         onLogout?.();

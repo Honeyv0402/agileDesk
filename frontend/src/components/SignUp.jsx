@@ -23,16 +23,28 @@ const SignUp = ({ onSwitchMode }) => {
                 `${API_URL}/api/user/register`,
                 formData
             );
-            console.log("signup successful", data);
+            // console.log("signup successful", data);
+
+            // setMessage({
+            //     text: "Registration successful! You can login now",
+            //     type: "success"
+            // });
 
             setMessage({
-                text: "Registration successful! You can login now",
+                text: "Registration successful! Redirecting to login...",
                 type: "success"
             });
 
             setFormData(INITIAL_FORM);
+
+            // SWITCH TO LOGIN AFTER 1 SECOND
+            setTimeout(() => {
+                onSwitchMode();
+            }, 1000);
+
+            setFormData(INITIAL_FORM);
         } catch (err) {
-            console.log("signup error:", err);
+            // console.log("signup error:", err);
             setMessage({
                 text: err.response?.data?.message || "please try again later",
                 type: "error"

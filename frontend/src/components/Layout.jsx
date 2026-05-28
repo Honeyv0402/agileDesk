@@ -40,7 +40,7 @@ const Layout = ({ onLogout, user }) => {
 
             setTasks(arr);
         } catch (err) {
-            console.error(err);
+            // console.error(err);
             setError(err.message || "Could not load tasks");
 
             if (err.response?.status === 401) {
